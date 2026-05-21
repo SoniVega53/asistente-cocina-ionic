@@ -1,0 +1,10 @@
+{
+  "appId": "com.tu.app",
+  "appName": "asistente-cocina",
+  "webDir": "www",
+  "server": {
+    "hostname": "localhost",
+    "androidScheme": "http",
+    "cleartextHttpPermitted": true
+  }
+}

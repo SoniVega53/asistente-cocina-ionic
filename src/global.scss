@@ -35,3 +35,72 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+
+/* ESTILOS GLOBALES */
+
+// Fondos
+ion-content {
+    --background: var(--ion-color-light);
+}
+
+// Botones más gorditos y modernos
+ion-button {
+    --border-radius: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: none; // Evita que todo esté en MAYÚSCULAS
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+// Tarjetas flotantes y elegantes
+ion-card {
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    margin: 15px;
+
+    ion-card-title {
+        font-weight: 700;
+        color: var(--ion-color-dark);
+    }
+}
+
+// Inputs de texto redondeados
+ion-input,
+ion-textarea {
+    --background: #ffffff;
+    --padding-start: 15px !important;
+    --border-radius: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+// Títulos del header
+ion-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+// Ajuste para el texto generado por la IA (HTML inyectado)
+// .recipe-text {
+//     h3 {
+//         color: var(--ion-color-primary);
+//         font-weight: 600;
+//         margin-top: 20px;
+//     }
+
+//     ul {
+//         padding-left: 20px;
+
+//         li {
+//             margin-bottom: 8px;
+//             color: #444;
+//         }
+//     }
+
+//     b,
+//     strong {
+//         color: var(--ion-color-dark);
+//     }
+// }

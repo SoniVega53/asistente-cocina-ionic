@@ -1,20 +1,212 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+    <ion-title class="header-title">
+      <ion-icon name="restaurant" class="title-icon"></ion-icon>
+      Chef IA UMG
     </ion-title>
+    <p class="header-subtitle">Tu despensa, recetas infinitas</p>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="app-background">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <!-- CONTENEDOR: COCINAR -->
+  <div *ngIf="vistaActual === 'cocinar'" class="tab-content animate-fade-in">
+
+    <!-- Título de bienvenida -->
+    <div class="welcome-text">
+      <h2>¿Qué hay en tu despensa?</h2>
+      <p>Toma una foto de tus ingredientes y la IA hará su magia.</p>
+    </div>
+
+    <!-- Imagen capturada o Placeholder -->
+    <div class="image-container" (click)="tomarFoto()" [class.has-image]="imagenCapturada">
+      <img *ngIf="imagenCapturada" [src]="imagenCapturada" class="captured-image" />
+      <div *ngIf="!imagenCapturada" class="placeholder-box">
+        <div class="icon-circle">
+          <ion-icon name="camera"></ion-icon>
+        </div>
+        <p>Toca para fotografiar</p>
+      </div>
+    </div>
+
+    <!-- Botón de acción principal -->
+    <div class="action-section">
+      <ion-button expand="block" shape="round" class="btn-primary" (click)="obtenerReceta()" [disabled]="cargando">
+        <ion-icon name="sparkles" slot="start"></ion-icon>
+        {{ cargando ? 'Creando magia...' : 'Generar Receta' }}
+      </ion-button>
+    </div>
+
+    <!-- Spinner de carga -->
+    <div *ngIf="cargando" class="spinner-container animate-fade-in">
+      <ion-spinner name="dots" class="custom-spinner"></ion-spinner>
+      <p>{{ textoCargando }}</p>
+    </div>
+
+    <!-- Receta generada con opciones -->
+    <ion-card *ngIf="recetaGenerada" class="premium-card animate-slide-up">
+      <ion-card-header>
+        <div class="card-header-flex">
+          <ion-icon name="star" class="accent-icon"></ion-icon>
+          <ion-card-title>Tu Receta Sugerida</ion-card-title>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <div [innerHTML]="recetaGenerada" class="recipe-text"></div>
+
+        <ion-button expand="block" shape="round" fill="outline" class="btn-outline-success mt-16"
+          (click)="guardarRecetaActual()">
+          <ion-icon name="bookmark" slot="start"></ion-icon>
+          Guardar en mi recetario
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Chat interactivo -->
+    <ion-card *ngIf="recetaGenerada" class="premium-card chat-card animate-slide-up">
+      <ion-card-content>
+        <p class="chat-instructions">
+          <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+          ¿Quieres cambiar algo? Pídeselo al chef:
+        </p>
+        <div class="chat-input-wrapper">
+          <ion-textarea placeholder="Ej: Hazla vegetariana, quita la sal..." [(ngModel)]="mensajeChat" rows="2"
+            class="custom-textarea"></ion-textarea>
+        </div>
+        <ion-button expand="block" shape="round" class="btn-secondary" (click)="obtenerReceta()" [disabled]="cargando">
+          <ion-icon name="send" slot="start"></ion-icon>
+          Modificar Receta
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
   </div>
+
+  <!-- CONTENEDOR: RECETAS GUARDADAS -->
+  <div *ngIf="vistaActual === 'guardadas'" class="tab-content animate-fade-in">
+
+    <div class="search-section">
+      <ion-searchbar placeholder="Buscar receta por título..." (ionInput)="buscarRecetas($event)"
+        [value]="terminoBusqueda" class="custom-searchbar">
+      </ion-searchbar>
+    </div>
+
+    <!-- Estados vacíos -->
+    <div *ngIf="recetasGuardadas.length === 0" class="empty-state">
+      <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" class="empty-icon" alt="Libro vacío" />
+      <h3>Recetario Vacío</h3>
+      <p>Tus recetas guardadas aparecerán aquí.</p>
+    </div>
+
+    <div *ngIf="recetasGuardadas.length > 0 && recetasFiltradas.length === 0" class="empty-state">
+      <ion-icon name="search-outline"></ion-icon>
+      <p>No encontramos ninguna receta con ese nombre.</p>
+    </div>
+
+    <!-- Lista de recetas guardadas -->
+    <ion-card *ngFor="let receta of recetasFiltradas" class="premium-card saved-recipe-card animate-fade-in">
+      <div class="saved-image-wrapper" *ngIf="receta.imagen">
+        <img [src]="receta.imagen" class="saved-recipe-img" />
+        <div class="date-badge">{{ receta.fecha }}</div>
+      </div>
+      <ion-card-header>
+        <ion-card-title class="saved-title">{{ receta.titulo }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="saved-card-buttons">
+          <ion-button shape="round" class="btn-primary-small" (click)="verRecetaCompleta(receta)">
+            <ion-icon name="book" slot="start"></ion-icon>
+            Leer
+          </ion-button>
+          <ion-button shape="round" fill="clear" class="btn-danger-icon" (click)="eliminarReceta(receta.id, $event)">
+            <ion-icon name="trash" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
 </ion-content>
+
+<!-- EL MODAL SE MUEVE AQUÍ: FUERA DE ION-CONTENT -->
+<!-- <ion-modal [isOpen]="isModalOpen" (didDismiss)="cerrarModal()" class="recipe-modal">
+  <ng-template>
+    <ion-header class="ion-no-border">
+      <ion-toolbar class="modal-toolbar">
+        <ion-buttons slot="start">
+          <ion-button (click)="cerrarModal()" class="close-btn">
+            <ion-icon name="chevron-down-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ recetaSeleccionada?.titulo }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="modal-bg">
+      <div class="modal-recipe-content" *ngIf="recetaSeleccionada">
+        <div class="modal-hero" *ngIf="recetaSeleccionada.imagen">
+          <img [src]="recetaSeleccionada.imagen" class="modal-hero-img" />
+        </div>
+        <div class="modal-body ion-padding">
+          <div class="modal-meta">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Preparada el: {{ recetaSeleccionada.fecha }}</span>
+          </div>
+          <div [innerHTML]="recetaSeleccionada.texto" class="recipe-text recipe-detail-text"></div>
+        </div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal> -->
+
+<ion-modal [isOpen]="isModalOpen" (didDismiss)="cerrarModal()" class="recipe-modal">
+  <ng-template>
+    <ion-header class="ion-no-border">
+      <ion-toolbar class="modal-toolbar">
+        <ion-buttons slot="start">
+          <ion-button (click)="cerrarModal()" class="close-btn">
+            <ion-icon name="chevron-down-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ recetaSeleccionada?.titulo }}</ion-title>
+        
+        <ion-buttons slot="end">
+          <ion-button (click)="abrirMenuExportar()" color="primary">
+            <ion-icon name="download-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        
+      </ion-toolbar>
+    </ion-header>
+    
+    <ion-content class="modal-bg">
+      <div class="modal-recipe-content" *ngIf="recetaSeleccionada" id="receta-exportable">
+        <div class="modal-hero" *ngIf="recetaSeleccionada.imagen">
+          <img [src]="recetaSeleccionada.imagen" class="modal-hero-img" crossorigin="anonymous" />
+        </div>
+        <div class="modal-body ion-padding">
+          <div class="modal-meta">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Preparada el: {{ recetaSeleccionada.fecha }}</span>
+          </div>
+          <div [innerHTML]="recetaSeleccionada.texto" class="recipe-text recipe-detail-text"></div>
+        </div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- BARRA DE NAVEGACIÓN INFERIOR (ESTILO FLOTANTE) -->
+<ion-footer class="ion-no-border">
+  <div class="custom-tab-bar">
+    <div class="tab-btn" [class.active]="vistaActual === 'cocinar'" (click)="vistaActual = 'cocinar'">
+      <ion-icon name="restaurant"></ion-icon>
+      <span>Cocinar</span>
+    </div>
+    <div class="tab-btn" [class.active]="vistaActual === 'guardadas'" (click)="vistaActual = 'guardadas'">
+      <ion-icon name="bookmarks"></ion-icon>
+      <span>Guardadas</span>
+    </div>
+  </div>
+</ion-footer>
