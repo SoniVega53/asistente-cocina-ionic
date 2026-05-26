@@ -1,0 +1,5 @@
+ionic build
+npx cap add android
+npx cap sync
+npx cap run android
+npx cap open android

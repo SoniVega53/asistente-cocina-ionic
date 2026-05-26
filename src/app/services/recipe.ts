@@ -10,10 +10,23 @@ import { Preferences } from '@capacitor/preferences';
 export class RecipeService {
 
   // private apiUrl: string = 'http://localhost:8080/api/recetas/generar';
-  private apiUrl: string = 'https://asistente-cocina-api-production.up.railway.app/api/recetas/generar';
+  private apiUrl: string = 'https://asistente-cocina-api-production.up.railway.app/api/recetas';
 
   constructor(private http: HttpClient) {
     // this.cargarIpGuardada();
+  }
+
+  detectarIngredientes(base64Image: string): Observable<any> {
+    const payload = { imageBase64: base64Image };
+    return this.http.post(`${this.apiUrl}/detectar`, payload);
+  }
+
+  generarRecetaConLista(ingredientes: string[], instruccionesExtra?: string): Observable<any> {
+    const payload = {
+      ingredientes: ingredientes,
+      mensaje: instruccionesExtra || ""
+    };
+    return this.http.post(`${this.apiUrl}/generar-con-ingredientes`, payload);
   }
 
   async cargarIpGuardada() {
@@ -57,6 +70,6 @@ export class RecipeService {
       imageBase64: base64Image,
       mensaje: mensajeUsuario || ""
     };
-    return this.http.post(this.apiUrl, payload);
+    return this.http.post(`${this.apiUrl}/generar`, payload);
   }
 }

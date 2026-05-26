@@ -402,5 +402,16 @@ export class HomePage implements OnInit {
     }
   }
 
+  imagenCapturedOAntigua(): boolean {
+    return this.imagenCapturada != null;
+  }
+  // --- NAVEGACIÓN Y CONFIGURACIÓN ---
+  cambiarVista(nuevaVista: string) {
+    this.vistaActual = nuevaVista;
+    if (nuevaVista === 'guardadas') {
+      // Recargamos el listado automáticamente al entrar a la sección para capturar recetas nuevas
+      this.cargarRecetasGuardadas();
+    }
+  }
 
 }

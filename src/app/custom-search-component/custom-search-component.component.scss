@@ -1,0 +1,274 @@
+/* CONTENEDOR PRINCIPAL GENERAL */
+.custom-search-container {
+  padding: 8px 4px 32px 4px;
+  position: relative;
+}
+
+/* NUEVO: OVERLAY FLOTANTE PARA EL LOADER (CUBRE TODO) */
+.global-overlay-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 99999; /* Se posiciona por encima de cualquier componente o toolbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .loader-content-box {
+    text-align: center;
+    padding: 24px;
+    
+    ion-spinner {
+      transform: scale(1.8);
+      color: var(--ion-color-primary);
+      margin-bottom: 20px;
+    }
+    p {
+      color: var(--ion-color-dark);
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin: 0;
+    }
+  }
+}
+
+/* TEXTOS DE ENCABEZADO */
+.custom-header {
+  padding: 12px 20px 4px 20px;
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--ion-color-dark);
+    margin: 0 0 6px 0;
+  }
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 0.95rem;
+  }
+}
+
+/* BOTÓN DE ESCANEO */
+.scan-button-wrapper {
+  margin: 16px 20px 8px 20px;
+  
+  .btn-scan {
+    --background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
+    --box-shadow: 0 6px 20px rgba(var(--ion-color-primary-rgb), 0.3);
+    font-weight: 700;
+    font-size: 1rem;
+    height: 48px;
+  }
+}
+
+/* TARJETAS PREMIUM REDONDEADAS */
+.design-card {
+  margin: 16px 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  background: #ffffff;
+  border: none;
+  overflow: hidden;
+
+  ion-card-header {
+    padding: 16px 16px 8px 16px;
+    ion-card-title {
+      font-weight: 800;
+      color: var(--ion-color-dark);
+      font-size: 1.15rem;
+    }
+  }
+  ion-card-content { padding: 0 16px 16px 16px; }
+}
+
+/* CAJA DE TEXTO PARA INGRESAR ENTRADAS */
+.input-item-box {
+  --background: var(--ion-color-light-tint, #f4f5f8);
+  --border-radius: 14px;
+  --padding-start: 14px;
+  border: 1px solid rgba(var(--ion-color-light-shade-rgb), 0.4);
+  margin-bottom: 4px;
+
+  ion-input {
+    color: var(--ion-color-dark);
+    font-weight: 500;
+    --placeholder-color: var(--ion-color-medium);
+    font-size: 0.95rem;
+  }
+  .add-icon-size { font-size: 1.7rem; }
+}
+
+/* CHIPS FLEX WRAPPER */
+.chips-flex-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+
+  .recipe-chip {
+    --background: rgba(var(--ion-color-primary-rgb), 0.08);
+    --color: var(--ion-color-primary-shade);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin: 0;
+    border: 1px solid rgba(var(--ion-color-primary-rgb), 0.15);
+    animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+
+    .close-chip-icon {
+      color: var(--ion-color-primary);
+      font-size: 1.15rem;
+    }
+  }
+}
+
+.empty-hint-text {
+  color: var(--ion-color-medium);
+  font-size: 0.88rem;
+  font-style: italic;
+  margin: 12px 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  ion-icon { font-size: 1.1rem; }
+}
+
+/* BLOQUE DE SELECTORES */
+.filters-grid-list { display: flex; flex-direction: column; gap: 14px; }
+
+.custom-select-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 4px 12px;
+  border: 1px solid rgba(var(--ion-color-light-shade-rgb), 0.5);
+
+  .select-label-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    ion-icon { font-size: 1.25rem; }
+    ion-label { font-weight: 700; color: var(--ion-color-dark); }
+  }
+  ion-select {
+    font-weight: 600;
+    color: var(--ion-color-primary-shade);
+    font-size: 0.95rem;
+    max-width: 50%;
+  }
+}
+
+/* SECCIÓN DIETAS */
+.diet-tags-section {
+  margin-top: 6px;
+  .diet-section-title { font-weight: 800; color: var(--ion-color-dark); margin: 0 0 10px 2px; }
+  .diet-chips-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    .diet-toggle-chip {
+      margin: 0; font-weight: 700; font-size: 0.85rem; padding: 6px 12px;
+      &[outline] { --border-color: rgba(var(--ion-color-secondary-rgb), 0.35); --color: var(--ion-color-secondary-shade); }
+      &:not([outline]) {
+        --background: var(--ion-color-secondary);
+        --color: var(--ion-color-secondary-contrast, #ffffff);
+        box-shadow: 0 4px 12px rgba(var(--ion-color-secondary-rgb), 0.2);
+      }
+    }
+  }
+}
+
+/* BOTÓN ENTREGAR RECETA */
+.action-submit-wrapper {
+  margin: 20px 20px 8px 20px;
+  .btn-submit-recipe {
+    --background: var(--ion-color-secondary);
+    --background-activated: var(--ion-color-secondary-shade);
+    --box-shadow: 0 6px 20px rgba(var(--ion-color-secondary-rgb), 0.25);
+    font-weight: 800;
+    height: 48px;
+  }
+}
+
+/* TARJETA DE RESULTADO */
+.recipe-result-card {
+  border-radius: 20px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.05);
+  margin: 16px 20px 12px 20px;
+  background: #ffffff;
+  border: none;
+}
+.card-footer-action-bar {
+  border-top: 1px solid var(--ion-color-light-shade);
+  background: rgba(var(--ion-color-light-rgb), 0.4);
+  padding: 6px 12px;
+  display: flex;
+  justify-content: center;
+  .btn-save-recipe { font-weight: 700; --color: var(--ion-color-success); }
+}
+
+.chat-input-container {
+  margin: 12px 20px 24px 20px;
+  padding: 14px;
+  background: linear-gradient(145deg, #ffffff, #fdfbfb);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.02);
+
+  .chat-hint {
+    margin: 0 0 10px 4px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+  }
+  .chat-item-box {
+    --background: var(--ion-color-light-tint);
+    --border-radius: 16px;
+    --padding-start: 14px;
+    
+    ion-input {
+        color: var(--ion-color-dark);
+        font-weight: 500;
+        --placeholder-color: var(--ion-color-medium);
+        font-size: 0.95rem;
+    }
+    .send-icon-size {
+      font-size: 1.4rem;
+    }
+  }
+}
+
+/* ::ng-deep PARA RENDERIZAR EL HTML DE LA RECETA EN EL COMPONENTE */
+::ng-deep .recipe-html-content {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ion-color-dark);
+
+  h3 {
+    color: var(--ion-color-primary);
+    font-weight: 800;
+    font-size: 1.3rem;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  ul, ol { padding-left: 20px; margin-bottom: 16px; }
+  li {
+    margin-bottom: 8px;
+    &::marker { color: var(--ion-color-primary); font-weight: bold; }
+  }
+  b, strong { color: var(--ion-color-dark); font-weight: 800; }
+  p { margin-bottom: 12px; }
+}
+
+/* ANIMACIONES */
+.animate-fade-in { animation: fadeIn 0.35s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }

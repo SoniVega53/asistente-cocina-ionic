@@ -1,0 +1,143 @@
+<div class="custom-search-container animate-fade-in">
+  
+  <div class="global-overlay-loader animate-fade-in" *ngIf="cargando">
+    <div class="loader-content-box">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>{{ textoCargando }}</p>
+    </div>
+  </div>
+
+  <div class="custom-header">
+    <h2>Búsqueda Personalizada</h2>
+    <p>Diseña tu menú ideal seleccionando tus preferencias.</p>
+  </div>
+
+  <div class="scan-button-wrapper">
+    <ion-button expand="block" fill="solid" shape="round" class="btn-scan" (click)="escanearFotoIngredientes()">
+      <ion-icon name="camera" slot="start"></ion-icon>
+      Escanear Ingredientes
+    </ion-button>
+  </div>
+
+  <ion-card class="design-card">
+    <ion-card-header>
+      <ion-card-title>Ingredientes Disponibles</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <ion-item lines="none" class="input-item-box">
+        <ion-input placeholder="Añadir ingrediente manualmente..." [(ngModel)]="nuevoIngredienteText" (keyup.enter)="agregarIngredienteManual()"></ion-input>
+        <ion-button fill="clear" slot="end" (click)="agregarIngredienteManual()">
+          <ion-icon name="add-circle" color="secondary" class="add-icon-size"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <div class="chips-flex-wrapper" *ngIf="ingredientesManuales.length > 0">
+        <ion-chip *ngFor="let ing of ingredientesManuales; let i = index" color="primary" class="recipe-chip" (click)="editarIngredienteManual(i)">
+          <ion-label>{{ ing }}</ion-label>
+          <ion-icon name="close-circle" class="close-chip-icon" (click)="eliminarIngredienteManual(i); $event.stopPropagation()"></ion-icon>
+        </ion-chip>
+      </div>
+      
+      <p class="empty-hint-text" *ngIf="ingredientesManuales.length === 0">
+        <ion-icon name="information-circle-outline"></ion-icon> No has agregado ningún ingrediente.
+      </p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="design-card">
+    <ion-card-header>
+      <ion-card-title>Preferencias del Chef</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content class="filters-grid-list">
+      <div class="custom-select-box">
+        <div class="select-label-wrapper">
+          <ion-icon name="restaurant" color="primary"></ion-icon>
+          <ion-label>Tipo de Plato</ion-label>
+        </div>
+        <ion-select [(ngModel)]="filtroPlato" interface="popover" placeholder="Cualquiera">
+          <ion-select-option value="Desayuno">Desayuno</ion-select-option>
+          <ion-select-option value="Almuerzo">Almuerzo / Comida</ion-select-option>
+          <ion-select-option value="Cena">Cena</ion-select-option>
+          <ion-select-option value="Postre">Postre</ion-select-option>
+        </ion-select>
+      </div>
+
+      <div class="custom-select-box">
+        <div class="select-label-wrapper">
+          <ion-icon name="speedometer" color="primary"></ion-icon>
+          <ion-label>Dificultad</ion-label>
+        </div>
+        <ion-select [(ngModel)]="filtroDificultad" interface="popover" placeholder="Cualquiera">
+          <ion-select-option value="Fácil">Fácil</ion-select-option>
+          <ion-select-option value="Medio">Medio</ion-select-option>
+          <ion-select-option value="Difícil">Difícil</ion-select-option>
+        </ion-select>
+      </div>
+
+      <div class="custom-select-box">
+        <div class="select-label-wrapper">
+          <ion-icon name="time" color="primary"></ion-icon>
+          <ion-label>Tiempo Máximo</ion-label>
+        </div>
+        <ion-select [(ngModel)]="filtroTiempo" interface="popover" placeholder="Cualquiera">
+          <ion-select-option value="Rápido (< 15 min)">Rápido (&lt; 15 min)</ion-select-option>
+          <ion-select-option value="Medio (< 30 min)">Medio (&lt; 30 min)</ion-select-option>
+          <ion-select-option value="Largo (30+ min)">Largo (30+ min)</ion-select-option>
+        </ion-select>
+      </div>
+
+      <div class="diet-tags-section">
+        <p class="diet-section-title">Restricciones Alimenticias</p>
+        <div class="diet-chips-flex">
+          <ion-chip [outline]="!dietasSeleccionadas.includes('Vegetariano')" (click)="toggleDieta('Vegetariano')" color="secondary" class="diet-toggle-chip">
+            <ion-label>Vegetariano</ion-label>
+          </ion-chip>
+          <ion-chip [outline]="!dietasSeleccionadas.includes('Vegano')" (click)="toggleDieta('Vegano')" color="secondary" class="diet-toggle-chip">
+            <ion-label>Vegano</ion-label>
+          </ion-chip>
+          <ion-chip [outline]="!dietasSeleccionadas.includes('Sin Gluten')" (click)="toggleDieta('Sin Gluten')" color="secondary" class="diet-toggle-chip">
+            <ion-label>Sin Gluten</ion-label>
+          </ion-chip>
+          <!-- <ion-chip [outline]="!dietasSeleccionadas.includes('Keto')" (click)="toggleDieta('Keto')" color="secondary" class="diet-toggle-chip">
+            <ion-label>Keto</ion-label>
+          </ion-chip> -->
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="action-submit-wrapper">
+    <ion-button expand="block" shape="round" class="btn-submit-recipe" (click)="generarRecetaPersonalizada()" [disabled]="cargando">
+      <ion-icon name="flash" slot="start"></ion-icon>
+      ¡Cocinar Receta!
+    </ion-button>
+  </div>
+
+  <div class="result-display-wrapper" *ngIf="recetaGeneradaPersonalizada">
+    
+    <ion-card class="recipe-result-card animate-slide-up">
+      <ion-card-content>
+        <div class="recipe-html-content" [innerHTML]="recetaGeneradaPersonalizada"></div>
+      </ion-card-content>
+      <div class="card-footer-action-bar">
+        <ion-button fill="clear" color="success" class="btn-save-recipe" (click)="guardarRecetaPersonalizada()">
+          <ion-icon name="bookmark" slot="start"></ion-icon> Guardar en mi recetario
+        </ion-button>
+      </div>
+    </ion-card>
+
+    <div class="chat-input-container chat-card animate-slide-up">
+      <p class="chat-hint">¿Quieres cambiar algo de esta receta? Pídeselo al chef:</p>
+      <ion-item lines="none" class="chat-item-box">
+        <ion-input placeholder="Ej: Hazla vegetariana, quita la cebolla..." [(ngModel)]="mensajeChat" (keyup.enter)="enviarModificacionPersonalizada()"></ion-input>
+        <ion-button fill="clear" slot="end" (click)="enviarModificacionPersonalizada()">
+          <ion-icon name="send" color="secondary" class="send-icon-size"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </div>
+
+  </div>
+
+</div>

@@ -10,7 +10,9 @@
 
 <ion-content class="app-background">
 
-  <!-- CONTENEDOR: COCINAR -->
+  <!-- =============================== -->
+  <!-- VISTA 1: ESCANEAR POR FOTO (COCINAR) -->
+  <!-- =============================== -->
   <div *ngIf="vistaActual === 'cocinar'" class="tab-content animate-fade-in">
 
     <!-- Título de bienvenida -->
@@ -20,7 +22,7 @@
     </div>
 
     <!-- Imagen capturada o Placeholder -->
-    <div class="image-container" (click)="tomarFoto()" [class.has-image]="imagenCapturada">
+    <div class="image-container" (click)="tomarFoto()" [class.has-image]="imagenCapturedOAntigua()">
       <img *ngIf="imagenCapturada" [src]="imagenCapturada" class="captured-image" />
       <div *ngIf="!imagenCapturada" class="placeholder-box">
         <div class="icon-circle">
@@ -83,7 +85,17 @@
 
   </div>
 
-  <!-- CONTENEDOR: RECETAS GUARDADAS -->
+  <!-- =================================== -->
+  <!-- VISTA 2: NUEVA BÚSQUEDA PERSONALIZADA -->
+  <!-- =================================== -->
+  <div [hidden]="vistaActual !== 'personalizada'" class="tab-content animate-fade-in">
+    <!-- REFERENCIA LIMPIA E INTERNA AL NUEVO COMPONENTE SEPARADO -->
+    <app-custom-search-component></app-custom-search-component>
+  </div>
+
+  <!-- =============================== -->
+  <!-- VISTA 3: RECETAS GUARDADAS      -->
+  <!-- =============================== -->
   <div *ngIf="vistaActual === 'guardadas'" class="tab-content animate-fade-in">
 
     <div class="search-section">
@@ -106,12 +118,19 @@
 
     <!-- Lista de recetas guardadas -->
     <ion-card *ngFor="let receta of recetasFiltradas" class="premium-card saved-recipe-card animate-fade-in">
-      <div class="saved-image-wrapper" *ngIf="receta.imagen">
+      <div  *ngIf="receta.imagen" [ngClass]="{'saved-image-wrapper': receta.imagen}">
         <img [src]="receta.imagen" class="saved-recipe-img" />
         <div class="date-badge">{{ receta.fecha }}</div>
       </div>
+      <!-- Gradiente alternativo para las recetas sin imagen capturada por cámara -->
+      <!-- <div class="placeholder-gradient" *ngIf="!receta.imagen" [ngClass]="{'saved-image-wrapper-no-image': !receta.imagen}">
+        <ion-icon name="restaurant" class="placeholder-gradient-icon"></ion-icon>
+        <div class="date-badge">{{ receta.fecha }}</div>
+      </div> -->
       <ion-card-header>
-        <ion-card-title class="saved-title">{{ receta.titulo }}</ion-card-title>
+        <ion-card-title class="saved-title" style="font-size: 1.3rem; font-weight: 800; color: var(--ion-color-dark);">
+          {{ receta.titulo }}
+        </ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <div class="saved-card-buttons">
@@ -129,37 +148,7 @@
 
 </ion-content>
 
-<!-- EL MODAL SE MUEVE AQUÍ: FUERA DE ION-CONTENT -->
-<!-- <ion-modal [isOpen]="isModalOpen" (didDismiss)="cerrarModal()" class="recipe-modal">
-  <ng-template>
-    <ion-header class="ion-no-border">
-      <ion-toolbar class="modal-toolbar">
-        <ion-buttons slot="start">
-          <ion-button (click)="cerrarModal()" class="close-btn">
-            <ion-icon name="chevron-down-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-        <ion-title>{{ recetaSeleccionada?.titulo }}</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-content class="modal-bg">
-      <div class="modal-recipe-content" *ngIf="recetaSeleccionada">
-        <div class="modal-hero" *ngIf="recetaSeleccionada.imagen">
-          <img [src]="recetaSeleccionada.imagen" class="modal-hero-img" />
-        </div>
-        <div class="modal-body ion-padding">
-          <div class="modal-meta">
-            <ion-icon name="calendar-outline"></ion-icon>
-            <span>Preparada el: {{ recetaSeleccionada.fecha }}</span>
-          </div>
-          <div [innerHTML]="recetaSeleccionada.texto" class="recipe-text recipe-detail-text"></div>
-        </div>
-      </div>
-    </ion-content>
-  </ng-template>
-</ion-modal> -->
-
+<!-- MODAL: DETALLE DE RECETA GUARDADA -->
 <ion-modal [isOpen]="isModalOpen" (didDismiss)="cerrarModal()" class="recipe-modal">
   <ng-template>
     <ion-header class="ion-no-border">
@@ -176,7 +165,6 @@
             <ion-icon name="download-outline" slot="icon-only"></ion-icon>
           </ion-button>
         </ion-buttons>
-        
       </ion-toolbar>
     </ion-header>
     
@@ -184,6 +172,9 @@
       <div class="modal-recipe-content" *ngIf="recetaSeleccionada" id="receta-exportable">
         <div class="modal-hero" *ngIf="recetaSeleccionada.imagen">
           <img [src]="recetaSeleccionada.imagen" class="modal-hero-img" crossorigin="anonymous" />
+        </div>
+        <div class="modal-hero placeholder-gradient" *ngIf="!recetaSeleccionada.imagen">
+          <ion-icon name="restaurant" class="placeholder-gradient-icon-large"></ion-icon>
         </div>
         <div class="modal-body ion-padding">
           <div class="modal-meta">
@@ -197,14 +188,21 @@
   </ng-template>
 </ion-modal>
 
-<!-- BARRA DE NAVEGACIÓN INFERIOR (ESTILO FLOTANTE) -->
+<!-- BARRA DE NAVEGACIÓN INFERIOR CON TRES OPCIONES -->
 <ion-footer class="ion-no-border">
   <div class="custom-tab-bar">
-    <div class="tab-btn" [class.active]="vistaActual === 'cocinar'" (click)="vistaActual = 'cocinar'">
+    <!-- Pestaña 1: Cocinar por foto -->
+    <div class="tab-btn" [class.active]="vistaActual === 'cocinar'" (click)="cambiarVista('cocinar')">
       <ion-icon name="restaurant"></ion-icon>
       <span>Cocinar</span>
     </div>
-    <div class="tab-btn" [class.active]="vistaActual === 'guardadas'" (click)="vistaActual = 'guardadas'">
+    <!-- Pestaña 2: Personalizar (NUEVO COMPONENTE) -->
+    <div class="tab-btn" [class.active]="vistaActual === 'personalizada'" (click)="cambiarVista('personalizada')">
+      <ion-icon name="options-outline"></ion-icon>
+      <span>Personalizar</span>
+    </div>
+    <!-- Pestaña 3: Mis recetas guardadas -->
+    <div class="tab-btn" [class.active]="vistaActual === 'guardadas'" (click)="cambiarVista('guardadas')">
       <ion-icon name="bookmarks"></ion-icon>
       <span>Guardadas</span>
     </div>
