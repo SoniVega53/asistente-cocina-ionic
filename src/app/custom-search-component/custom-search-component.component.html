@@ -13,6 +13,7 @@
   </div>
 
   <div class="scan-button-wrapper">
+    <img src="{{ imagenCapturada }}" alt="Foto de ingredientes" *ngIf="imagenCapturada" class="captured-photo-preview animate-fade-in" />
     <ion-button expand="block" fill="solid" shape="round" class="btn-scan" (click)="escanearFotoIngredientes()">
       <ion-icon name="camera" slot="start"></ion-icon>
       Escanear Ingredientes

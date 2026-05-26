@@ -14,13 +14,15 @@ export class CustomSearchComponentComponent implements OnInit {
 
   cargando: boolean = false;
   textoCargando: string = 'Inspirando al chef interior... 🌟';
+  imagenCapturada: string | null = null;
+
 
   // Lista dinámica de ingredientes que el usuario puede editar, borrar o añadir
   ingredientesManuales: string[] = [];
   nuevoIngredienteText: string = '';
   mensajeChat: string = '';
   recetaAnterior: string | null = null;
-  
+
   // Filtros de personalización personalizados
   filtroPlato: string = '';
   filtroDificultad: string = '';
@@ -48,6 +50,7 @@ export class CustomSearchComponentComponent implements OnInit {
       });
 
       if (image && image.base64String) {
+        this.imagenCapturada = `data:image/jpeg;base64,${image.base64String}`;
         this.cargando = true;
         this.textoCargando = 'El Chef IA está leyendo tu foto... 🔍';
         this.recetaGeneradaPersonalizada = null;
@@ -181,7 +184,7 @@ export class CustomSearchComponentComponent implements OnInit {
               id: Date.now().toString(),
               titulo: data.titulo,
               fecha: new Date().toLocaleDateString(),
-              imagen: null, // Al ser personalizada por texto no lleva foto de cámara
+              imagen: this.imagenCapturada, 
               texto: this.recetaGeneradaPersonalizada
             };
 
